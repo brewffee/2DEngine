@@ -42,3 +42,8 @@
  * Creates a basic inline getter for a class member, returning a reference
  */
 #define GETTER_REF(t, name) t &get_##name() { return this->name; }
+
+/**
+ * This function uses a template parameter "T".
+ */
+#define TFUNC template<typename T>
