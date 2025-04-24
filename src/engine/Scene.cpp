@@ -1,7 +1,6 @@
 #include "../../include/engine/Scene.h"
 
 Scene::~Scene() {
-    std::cout<<"Scene::~Scene() called"<<std::endl;
     for (auto &child: children) {
         delete child.second;
     }

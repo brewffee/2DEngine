@@ -19,14 +19,14 @@ class Engine {
     
     private_props:
         double updates_per_frame = 1.0 / 75.0;
-        int target_framerate = 0; // todo: actually implement
+        int32_t target_framerate = 0; // todo: actually implement
         bool vsync = false;
         
         int32_t window_width = 800; // todo: require user to set default window size
         int32_t window_height = 600;
-        float_t aspect_ratio = window_width / window_height;
+        float aspect_ratio = window_width / window_height;
         
-        const char* title = "meow :3";
+        const char* title = "Application";
         
         double current_time{}, elapsed_time{}, prev_time{}, accumulator{};
         int frame_count = 0;
