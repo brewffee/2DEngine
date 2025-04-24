@@ -39,7 +39,7 @@ class Engine {
         int status = 0; // todo: i swear i will use you soon
         double fps{};
         std::unordered_map<const char*, Input> input_map{};
-        std::vector<Scene> scene_list{};
+        Vector<Scene> scene_list{}; // todo apparently this is unused, fix that lmao
         Scene *default_scene{};
         Scene *current_scene{};
         bool window_focused = false;
@@ -83,7 +83,7 @@ class Engine {
         GETTER(Scene*, current_scene); // setting would be handled by queue system
         GETTER_SETTER(Scene*, default_scene);
         GETTER(double, fps);
-        GETTER(std::vector<Scene>, scene_list);
+        GETTER(Vector<Scene>, scene_list);
         GETTER(bool, window_focused);
         GETTER(GLFWwindow*, glfw);
         GETTER(int, status);

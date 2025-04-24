@@ -13,7 +13,6 @@ TFUNC void Vector<T>::resize(size_t new_capacity) {
 
 // //////////////////////////////////////////////////////////////////////////////////////////
 
-
 TFUNC Vector<T>::Vector():
     _data(nullptr),
     _size(0),
@@ -172,16 +171,15 @@ TFUNC void Vector<T>::for_each(ItemCallback function) {
     }
 }
 
-TFUNC long Vector<T>::index_of(const T &value) const {
-    // todo: will the narrowing conversion be a hugantic deal?? i really hope not :pray emoji:
+TFUNC Result<size_t> Vector<T>::index_of(const T &value) const {
     for (size_t i = 0; i < _size; i++) {
-        if (_data[i] == value) return i;
+        if (_data[i] == value) return Result<size_t>(i);
     }
     
-    return -1; // not found
+    return Result<size_t>("Could not find value"); // not found
 }
 
-TFUNC Vector<T> Vector<T>::indexes_of(const T &value) const {
+TFUNC Vector<size_t> Vector<T>::indexes_of(const T &value) const {
     Vector<size_t> indexes;
     for (size_t i = 0; i < _size; i++) {
         if (_data[i] == value) indexes.push_back(i);
@@ -307,13 +305,17 @@ TFUNC bool Vector<T>::every(PassCondition condition) const {
 }
 
 TFUNC Vector<T> Vector<T>::unique() {
+    Vector<T> unique;
     for (size_t i = 0; i < _size; i++) {
-        for (size_t j = i + 1; j < _size; j++) {
-            if (_data[i] == _data[j]) {
-                erase(j);
-                j--;
+        bool is_unique{true};
+        for (size_t j = 0; j < unique._size; j++) {
+            if (_data[i] == unique._data[j]) {
+                is_unique = false;
+                break;
             }
         }
+        
+        if (is_unique) unique.push_back(_data[i]);
     }
-    return *this;
+    return unique;
 }
