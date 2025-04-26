@@ -5,6 +5,7 @@
 #include <array>
 #include <stdexcept>
 #include "Result.h"
+#include "../macros.h"
 
 /**
  * A class representing a dynamic array of objects. Most operations return a
@@ -16,18 +17,18 @@
  */
 template <typename T>
 class Vector {
-    T* _data;
+    T* _data{};
     size_t _size;
     size_t _capacity;
     
-    void resize(size_t new_size);
+    void resize(size_t new_capacity);
     
     public:
         Vector();
-        Vector(std::initializer_list<T> l);
+        Vector(std::initializer_list<T> list);
         Vector(const Vector &other);
         Vector(Vector &&other) noexcept;
-        explicit Vector(size_t starting_capacity);
+        explicit Vector(size_t initial_capacity);
         ~Vector();
         
         Vector &operator=(const Vector &other);
@@ -36,17 +37,17 @@ class Vector {
         
         [[nodiscard]] size_t size() const;
         [[nodiscard]] size_t capacity() const;
-        T *data() const;
+        [[nodiscard]] T *data() const;
         
-        T *begin() const;
-        T *end() const;
+        [[nodiscard]] T *begin() const;
+        [[nodiscard]] T *end() const;
         
         /**
          * Gets the value at the specified index
          * @param index - The index of the value
          * @exception std::out_of_range - if the index is greater than the size of the vector
          */
-        T &at(size_t index) const;
+        [[nodiscard]] T &at(size_t index) const;
         
         /**
          * Deletes everything in the vector
@@ -58,14 +59,14 @@ class Vector {
          * Creates a copy of this vector
          * @return - A newly created Vector
          */
-        Vector<T> copy() const;
+        [[nodiscard]] Vector<T> copy() const;
         
         /**
          * Determines whether the vector contains the specified value
          * @param value - The value to search for
          * @return - true if the value is found, false otherwise
          */
-        bool contains(const T &value) const;
+        [[nodiscard]] bool contains(const T &value) const;
         
         /**
          * Checks if the vector contains no values
@@ -126,14 +127,14 @@ class Vector {
          * @param value - The value to search for
          * @return a Result object containing the index if successful, or an error message if not.
          */
-        Result<size_t> index_of(const T &value) const;
+        [[nodiscard]] Result<size_t> index_of(const T &value) const;
         
         /**
          * Gets the indexes of all occurrences of the specified value.
          * @param value - The value to search for
          * @return a Vector object containing the indexes. If the value is not found, an empty vector is returned
          */
-        Vector<size_t> indexes_of(const T &value) const;
+        [[nodiscard]] Vector<size_t> indexes_of(const T &value) const;
         
         /**
          * Inserts a new item at the specified index
@@ -273,3 +274,5 @@ class Vector {
          */
         Vector<T> unique();
 };
+
+#include "Vector.inl"

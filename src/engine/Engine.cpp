@@ -3,7 +3,7 @@
 double Engine::_get_current_framerate(int &frames, double &ptime) {
     const double delta = instance() -> current_time - ptime;
     
-    frames++;
+    ++frames;
     if (delta >= 1.0) {
         double cfps = frames / delta;
         frames = 0;
@@ -38,7 +38,7 @@ void Engine::_glfw_cursor_pos_callback(GLFWwindow* window, double xpos, double y
     auto [width, height] = Engine::instance() -> get_window_size();
     
     // Convert to world coordinates
-    mouse_pos = Vec2::to_world({xpos, ypos}, (float) width, (float) height, world_bounds.right, world_bounds.top);
+    mouse_pos = Vec2::to_world({xpos, ypos}, width, height, world_bounds.right, world_bounds.top);
     if (instance() -> current_scene && instance() -> current_scene -> input_enabled)
         instance() -> current_scene -> input();
 }
@@ -46,7 +46,7 @@ void Engine::_glfw_cursor_pos_callback(GLFWwindow* window, double xpos, double y
 void Engine::_do_key_event_gl(int key, int _scancode, int action, int _mods) {
     for (auto &[name, input]: input_map) {
         // if any keycode is pressed, the entire input should be marked as pressed
-        if (find(input.keycodes.begin(), input.keycodes.end(), key) != input.keycodes.end()) {
+        if (input.keycodes.contains(key)) {
             switch (action) {
                 case GLFW_PRESS:
                     input.pressState = Input::PRESSED;

@@ -6,6 +6,7 @@ project(2DEngine VERSION 1.0.0 LANGUAGES CXX)
 
 file(GLOB_RECURSE sources "src/*.cpp")
 file(GLOB_RECURSE headers "include/*.h")
+file(GLOB_RECURSE inline "include/*.inl")
 
 # Dependencies
 find_package(OpenGL REQUIRED)
@@ -19,7 +20,7 @@ include_directories(
 )
 
 # Executable
-add_executable(2DEngine main.cpp ${headers} ${sources})
+add_executable(2DEngine main.cpp ${headers} ${sources} ${inline})
 target_link_libraries(2DEngine
     SDL3_image glfw
     ${OPENGL_LIBRARIES}

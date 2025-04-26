@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "../macros.h"
+
 /**
  * A utility class for operations that may either fail or succeed.
  * @tparam T - The type of value to wrap
@@ -50,3 +52,5 @@ class Result {
          */
         [[nodiscard]] std::string error() const;
 };
+
+#include "Result.inl"
