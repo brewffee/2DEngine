@@ -38,13 +38,13 @@ void Grid::gl_draw() {
         glBegin(GL_LINES);
         
         // Repeating horizontal lines
-        for (auto y = (int) ceilf(eb / interval); y <= (int) floorf(et / interval); y++) {
+        for (auto y = (int) ceilf(eb / interval); y <= (int) floorf(et / interval); ++y) {
             glVertex2f(el, (float) y * interval);
             glVertex2f(er, (float) y * interval);
         }
         
         // Repeating vertical lines
-        for (auto x = (int) ceilf(el / interval); x <= (int) floorf(er / interval); x++) {
+        for (auto x = (int) ceilf(el / interval); x <= (int) floorf(er / interval); ++x) {
             glVertex2f((float) x * interval, et);
             glVertex2f((float) x * interval, eb);
         }

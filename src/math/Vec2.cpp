@@ -27,5 +27,5 @@ Vec2 Vec2::to_world(Vec2 src, float w, float h, float ex, float ey) {
     // h = Window height
     // ex = Visible extent of X in world plane (before going offscreen)
     // ey = Visible extent of Y in world plane (before going offscreen)
-    return { ((src.x/w) * 2 - 1) * ex, -((src.y/h) * 2 - 1) * ey };
+    return { ((src.x/w) * 2 - 1) * ex, -(((src.y/h) * 2) - 1) * ey };
 }

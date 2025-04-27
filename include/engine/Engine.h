@@ -24,7 +24,7 @@ class Engine {
         
         int32_t window_width = 800; // todo: require user to set default window size
         int32_t window_height = 600;
-        float aspect_ratio = window_width / window_height;
+        float aspect_ratio = (float) window_width / (float) window_height;
         
         const char* title = "Application";
         
@@ -38,8 +38,8 @@ class Engine {
         GLFWwindow *glfw{};
         int status = 0; // todo: i swear i will use you soon
         double fps{};
-        std::unordered_map<const char*, Input> input_map{};
-        Vector<Scene> scene_list{}; // todo apparently this is unused, fix that lmao
+        std::unordered_map<const char*, Input> input_map;
+        std::unordered_map<const char*, Input> scene_list; // todo apparently this is unused, fix that lmao
         Scene *default_scene{};
         Scene *current_scene{};
         bool window_focused = false;
@@ -81,9 +81,8 @@ class Engine {
         GETTER(Vec2, mouse_pos);
         
         GETTER(Scene*, current_scene); // setting would be handled by queue system
-        GETTER_SETTER(Scene*, default_scene);
+        GETTER_SETTER(Scene*, default_scene); //todo: add to scene list
         GETTER(double, fps);
-        GETTER(Vector<Scene>, scene_list);
         GETTER(bool, window_focused);
         GETTER(GLFWwindow*, glfw);
         GETTER(int, status);
