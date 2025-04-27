@@ -50,6 +50,12 @@ class Vector {
         [[nodiscard]] T &at(size_t index) const;
         
         /**
+         * Gets the last value in the vector.
+         * @exception std::out_of_range - if the vector is empty
+         */
+        [[nodiscard]] T &back() const;
+        
+        /**
          * Deletes everything in the vector
          * @return - The resulting empty vector
          */
@@ -121,6 +127,12 @@ class Vector {
          * @endcode
          */
         void for_each(ItemCallback callback);
+        
+        /**
+         * Gets the first item in the vector
+         * @exception std::out_of_range - if the vector is empty
+         */
+        [[nodiscard]] T &front() const;
         
         /**
          * Gets the index of the first occurrence of the specified value.

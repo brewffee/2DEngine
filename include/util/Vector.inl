@@ -114,6 +114,11 @@ TFUNC T &Vector<T>::at(size_t index) const {
     return _data[index];
 }
 
+TFUNC T &Vector<T>::back() const {
+    if (_size == 0) throw std::out_of_range("Index out of range");
+    return _data[_size - 1];
+}
+
 TFUNC Vector<T> Vector<T>::clear() {
     delete[] _data;
     _data = nullptr;
@@ -165,6 +170,11 @@ TFUNC void Vector<T>::for_each(ItemCallback callback) {
     for (size_t i = 0; i < _size; ++i) {
         callback(_data[i]);
     }
+}
+
+TFUNC T &Vector<T>::front() const {
+    if (_size == 0) throw std::out_of_range("Index out of range");
+    return *begin();
 }
 
 TFUNC Result<size_t> Vector<T>::index_of(const T &value) const {
