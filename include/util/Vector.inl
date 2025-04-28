@@ -1,15 +1,3 @@
-TFUNC void Vector<T>::resize(size_t new_capacity) {
-    T* new_data = new T[new_capacity];
-    for (size_t i = 0; i < _size; ++i) {
-        new_data[i] = _data[i];
-    }
-    delete[] _data;
-    _data = new_data;
-    _capacity = new_capacity;
-}
-
-// //////////////////////////////////////////////////////////////////////////////////////////
-
 TFUNC Vector<T>::Vector():
     _data(nullptr),
     _size(0),
@@ -228,7 +216,9 @@ TFUNC void Vector<T>::pop_back() {
     erase(_size - 1);
 }
 
-TFUNC void Vector<T>::pop_front() { erase(0); }
+TFUNC void Vector<T>::pop_front() {
+    erase(0);
+}
 
 TFUNC void Vector<T>::push_back(const T &value) {
     insert(_size, value);
@@ -242,6 +232,16 @@ TFUNC void Vector<T>::reserve(size_t new_capacity) {
     if (new_capacity > _capacity) {
         resize(new_capacity);
     }
+}
+
+TFUNC void Vector<T>::resize(size_t new_capacity) {
+    T* new_data = new T[new_capacity];
+    for (size_t i = 0; i < _size; ++i) {
+        new_data[i] = _data[i];
+    }
+    delete[] _data;
+    _data = new_data;
+    _capacity = new_capacity;
 }
 
 TFUNC Vector<T> Vector<T>::reverse() {
@@ -274,6 +274,10 @@ TFUNC Vector<T> Vector<T>::shuffle() {
         _data[j] = temp;
     }
     return *this;
+}
+
+TFUNC void Vector<T>::shrink_to_fit() {
+    resize(_size);
 }
 
 TFUNC Vector<T> Vector<T>::slice(size_t start, size_t end) {

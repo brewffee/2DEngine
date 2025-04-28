@@ -21,8 +21,6 @@ class Vector {
     size_t _size;
     size_t _capacity;
     
-    void resize(size_t new_capacity);
-    
     public:
         Vector();
         Vector(std::initializer_list<T> list);
@@ -208,6 +206,12 @@ class Vector {
         void reserve(size_t new_capacity);
         
         /**
+         * Resizes the vector to the specified capacity
+         * @param new_capacity - The new capacity
+         */
+        void resize(size_t new_capacity);
+        
+        /**
          * Reverses the order of the items in the vector
          * @return - The reversed vector
          */
@@ -235,6 +239,11 @@ class Vector {
          * @return - The shuffled vector
          */
         Vector<T> shuffle();
+        
+        /**
+         * Shrinks the capacity of this vector to fit the current size
+         */
+        void shrink_to_fit();
         
         /**
          * Creates a new vector containing a slice of the original vector
