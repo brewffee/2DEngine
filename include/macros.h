@@ -48,3 +48,8 @@
  * This function uses a template parameter "T".
  */
 #define TFUNC template<typename T>
+
+/**
+ * This function uses template parameters "K" and "V".
+ */
+#define KVFUNC template<typename K, typename V>
