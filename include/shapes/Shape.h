@@ -14,7 +14,7 @@ class Shape: public SceneItem {
     
     public_methods:
         Shape() = default; ~Shape() override = default;
-        explicit Shape(Transform *transform, RGBAColor color);
+        explicit Shape(Transform *transform, const RGBAColor &color);
 };
 
 // todo: more shapes + textured quad

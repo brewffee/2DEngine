@@ -1,10 +1,14 @@
-KVFUNC Pair<K, V>::Pair(K k, V v):
+#pragma once
+
+template<typename K, typename V>
+Pair<K, V>::Pair(K k, V v):
     _key(k),
     _value(v) {}
 
 // //////////////////////////////////////////////////////////////////////////////////////////
 
-KVFUNC Pair<K, V> &Pair<K, V>::operator=(const Pair<K, V> &other) {
+template<typename K, typename V>
+Pair<K, V> &Pair<K, V>::operator=(const Pair &other) {
     if (this != &other) {
         _key = other._key;
         _value = other._value;
@@ -12,7 +16,8 @@ KVFUNC Pair<K, V> &Pair<K, V>::operator=(const Pair<K, V> &other) {
     return *this;
 }
 
-KVFUNC Pair<K, V> &Pair<K, V>::operator=(Pair &&other) noexcept {
+template<typename K, typename V>
+Pair<K, V> &Pair<K, V>::operator=(Pair &&other) noexcept {
     if (this != &other) {
         _key = other._key;
         _value = other._value;
@@ -23,28 +28,29 @@ KVFUNC Pair<K, V> &Pair<K, V>::operator=(Pair &&other) noexcept {
     return *this;
 }
 
-KVFUNC bool Pair<K, V>::operator!=(const Pair<K, V> &other) const {
+template<typename K, typename V>
+bool Pair<K, V>::operator!=(const Pair &other) const {
     return _key != other._key || _value != other._value;
 }
 
-KVFUNC bool Pair<K, V>::operator==(const Pair<K, V> &other) const {
+template<typename K, typename V>
+bool Pair<K, V>::operator==(const Pair &other) const {
     return _key == other._key && _value == other._value;
 }
 
 // //////////////////////////////////////////////////////////////////////////////////////////
 
-KVFUNC Pair<V, K> Pair<K, V>::swap() const {
+template<typename K, typename V>
+Pair<V, K> Pair<K, V>::swap() const {
     return Pair<V, K>(_value, _key);
 }
 
-KVFUNC size_t Pair<K, V>::size() const {
-    return sizeof(Pair<K, V>);
-}
-
-KVFUNC K Pair<K, V>::key() const {
+template<typename K, typename V>
+K Pair<K, V>::key() const {
     return _key;
 }
 
-KVFUNC V Pair<K, V>::value() const {
+template<typename K, typename V>
+V Pair<K, V>::value() const {
     return _value;
 }

@@ -1,6 +1,8 @@
 #include "../../include/shapes/Grid.h"
 
-Grid::Grid(Transform *transform, RGBAColor color = RGBAColors::white, float interval = 0.f) {
+#include <cmath>
+
+Grid::Grid(Transform *transform, const RGBAColor &color = RGBAColors::white, const float interval = 0.f) {
     this -> transform = transform;
     this -> color = color;
     this -> interval = interval;
@@ -9,14 +11,14 @@ Grid::Grid(Transform *transform, RGBAColor color = RGBAColors::white, float inte
 void Grid::gl_draw() {
     auto &[position, scale, rotation, center_origin] = *transform;
     auto &[el, er, et, eb] = Engine::instance() -> get_world_bounds();
-    
+
     // draw only the axes
-    if (interval == 0.f) {
+    if (interval <= 0.f) {
         glLoadIdentity();
         glTranslatef(position.x, position.y, 0.f); // Apply the origin offset
         
         glLineWidth(1.f);
-        glColor3f(RGB(color));
+        glColor3f(RGB_F(color));
         glBegin(GL_LINES);
         
         // Horizontal
@@ -34,7 +36,7 @@ void Grid::gl_draw() {
         glTranslatef(position.x, position.y, 0.f); // Apply the origin offset
         
         glLineWidth(1.f);
-        glColor3f(RGB(color));
+        glColor3f(RGB_F(color));
         glBegin(GL_LINES);
         
         // Repeating horizontal lines

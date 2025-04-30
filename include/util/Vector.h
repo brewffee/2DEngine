@@ -1,11 +1,8 @@
 #pragma once
 
-#include <cstdlib>
 #include <initializer_list>
-#include <array>
-#include <stdexcept>
+
 #include "Result.h"
-#include "../macros.h"
 
 /**
  * A class representing a dynamic array of objects. Most operations return a
@@ -57,13 +54,13 @@ class Vector {
          * Deletes everything in the vector
          * @return - The resulting empty vector
          */
-        Vector<T> clear();
+        Vector clear();
         
         /**
          * Creates a copy of this vector
          * @return - A newly created Vector
          */
-        [[nodiscard]] Vector<T> copy() const;
+        [[nodiscard]] Vector copy() const;
         
         /**
          * Determines whether the vector contains the specified value
@@ -83,7 +80,7 @@ class Vector {
          * @param index - The index of the item to remove
          * @return - The
          */
-        Vector<T> erase(size_t index);
+        Vector erase(size_t index);
         
         /**
          * Function pointer type for Vector::filter's callback parameter. This function passes a const reference
@@ -100,7 +97,7 @@ class Vector {
          *
          * @return - The filtered vector
          */
-        Vector<T> filter(FilterCondition condition);
+        Vector filter(FilterCondition condition);
         
         /**
          * Floods the vector with the specified value from specified start to end index.
@@ -109,7 +106,7 @@ class Vector {
          * @param end - The end index
          * @return - The resulting vector
          */
-        Vector<T> flood(const T &value, size_t start, size_t end);
+        Vector flood(const T &value, size_t start, size_t end);
         
         /**
          * Function pointer type for iterating over the vector. This function passes a reference to the item and
@@ -152,7 +149,7 @@ class Vector {
          * @param value - The value to insert
          * @return - The resulting vector
          */
-        Vector<T> insert(size_t index, const T &value);
+        Vector insert(size_t index, const T &value);
         
         /**
          * Replaces the value at the specified index
@@ -160,14 +157,14 @@ class Vector {
          * @param value - The new value
          * @return - The resulting vector
          */
-        Vector<T> replace(size_t index, const T &value);
+        Vector replace(size_t index, const T &value);
         
         /**
          * Merges another vector into this vector
          * @param other - The vector to source values from
          * @return - The resulting vector
          */
-        Vector<T> merge(const Vector<T> &other);
+        Vector merge(const Vector &other);
         
         /**
          * Merges another vector into this vector, placing items at the front in the sameb order as they were
@@ -175,7 +172,7 @@ class Vector {
          * @param other - The vector to source values from
          * @return - The resulting vector
          */
-        Vector<T> merge_front(const Vector<T> &other);
+        Vector merge_front(const Vector &other);
         
         /**
          * Removes the last item in the vector
@@ -215,7 +212,7 @@ class Vector {
          * Reverses the order of the items in the vector
          * @return - The reversed vector
          */
-        Vector<T> reverse();
+        Vector reverse();
         
         /**
          * Function pointer type for comparing two items. This function passes two references to the items and
@@ -231,14 +228,14 @@ class Vector {
          * @endcode
          * @return - The sorted vector
          */
-        Vector<T> sort(Comparator comparator);
+        Vector sort(Comparator comparator);
         
         /**
          * Shuffles the items in the vector using a random number generator.
          * todo: allow seeding
          * @return - The shuffled vector
          */
-        Vector<T> shuffle();
+        Vector shuffle();
         
         /**
          * Shrinks the capacity of this vector to fit the current size
@@ -251,7 +248,7 @@ class Vector {
          * @param end - The end index
          * @return - The new vector
          */
-        Vector<T> slice(size_t start, size_t end);
+        Vector slice(size_t start, size_t end);
         
         /**
          * Function pointer type for checking if an item passes a condition. This function passes a reference
@@ -293,7 +290,7 @@ class Vector {
          * Returns a new vector containing only the unique items in the original vector
          * @return - The new vector
          */
-        Vector<T> unique();
+        Vector unique();
 };
 
 #include "Vector.inl"

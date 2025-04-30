@@ -1,9 +1,9 @@
-#include "include/math/Vec2.h"
 #include "include/color/RGBAColor.h"
-#include "include/engine/Scene.h"
-#include "include/shapes/QuadShape.h"
-#include "include/shapes/Grid.h"
 #include "include/engine/Engine.h"
+#include "include/engine/Scene.h"
+#include "include/math/Vec2.h"
+#include "include/shapes/Grid.h"
+#include "include/shapes/QuadShape.h"
 
 using namespace RGBAColors;
 
@@ -11,7 +11,7 @@ class MyScene final: public Scene {
     QuadShape* cursor;
     QuadShape* rectangle;
     QuadShape* player;
-    float speed = 0.01f;
+    float speed = .01f;
     
     Grid* axes;
     Grid* mainGrid;
@@ -27,13 +27,13 @@ class MyScene final: public Scene {
     
     public:
         MyScene() {
-            auto &[el, er, et, eb] = Engine::instance() -> get_world_bounds();
+            auto &[wb_left, wb_right, wb_top, wb_bottom] = Engine::instance() -> get_world_bounds();
             
-            wkeyd = new QuadShape(new Transform({er+.18f, et-.08f}, Vec2{0.1f}), RGBAColors::white);
-            akeyd = new QuadShape(new Transform({er+.08f, et-.18f}, Vec2{0.1f}), RGBAColors::white);
-            skeyd = new QuadShape(new Transform({er+.18f, et-.18f}, Vec2{0.1f}), RGBAColors::white);
-            dkeyd = new QuadShape(new Transform({er+.28f, et-.18f}, Vec2{0.1f}), RGBAColors::white);
-            lskeyd = new QuadShape(new Transform({er+.43f, et-.08f}, Vec2{0.1f}), RGBAColors::white);
+            wkeyd = new QuadShape(new Transform({ wb_right + .18f, wb_top - .08f }, Vec2::of(.1f)), white);
+            akeyd = new QuadShape(new Transform({ wb_right + .08f, wb_top - .18f }, Vec2::of(.1f)), white);
+            skeyd = new QuadShape(new Transform({ wb_right + .18f, wb_top - .18f }, Vec2::of(.1f)), white);
+            dkeyd = new QuadShape(new Transform({ wb_right + .28f, wb_top - .18f }, Vec2::of(.1f)), white);
+            lskeyd = new QuadShape(new Transform({ wb_right + .43f, wb_top - .08f }, Vec2::of(.1f)), white);
             
             add_child("w", wkeyd);
             add_child("a", akeyd);
@@ -41,13 +41,13 @@ class MyScene final: public Scene {
             add_child("d", dkeyd);
             add_child("ls", lskeyd);
             
-            cursor = new QuadShape(Transform::from_scale(0.05f), red);
+            cursor = new QuadShape(Transform::from_scale(.05f), red);
             add_child("cursor", cursor);
             
-            player = new QuadShape(Transform::from_scale(0.125f), purple);
+            player = new QuadShape(Transform::from_scale(.125f), purple);
             add_child("player", player);
             
-            rectangle = new QuadShape(Transform::from_scale(0.2375f, 0.15f), orange);
+            rectangle = new QuadShape(Transform::from_scale(.2375f, .15f), orange);
             add_child("rectangle", rectangle);
             
             subGrid = new Grid(Transform::zero(), light_gray, .125f);
@@ -56,51 +56,50 @@ class MyScene final: public Scene {
             add_child("axes", axes);
             add_child("mainGrid", mainGrid);
             add_child("subGrid", subGrid);
-        };
+        }
 
         ~MyScene() override = default;
         
-        void update(double delta) override {
+        void update(double) override {
             // Moves according to what key is pressed
-            if (p_up) player->transform->position.y += speed * (p_sprint ? 2.f : 1.f);
-            if (p_left) player->transform->position.x -= speed * (p_sprint ? 2.f : 1.f);
-            if (p_down) player->transform->position.y -= speed * (p_sprint ? 2.f : 1.f);
-            if (p_right) player->transform->position.x += speed * (p_sprint ? 2.f : 1.f);
+            if (p_up)       player -> transform -> position.y += speed * (p_sprint ? 2.f : 1.f);
+            if (p_left)     player -> transform -> position.x -= speed * (p_sprint ? 2.f : 1.f);
+            if (p_down)     player -> transform -> position.y -= speed * (p_sprint ? 2.f : 1.f);
+            if (p_right)    player -> transform -> position.x += speed * (p_sprint ? 2.f : 1.f);
             
-            auto &[el, er, et, eb] = Engine::instance() -> get_world_bounds();
-            Vec2 mouse_pos = Engine::instance() -> get_mouse_pos();
+            auto &[wb_left, wb_right, wb_top, wb_bottom] = Engine::instance() -> get_world_bounds();
+            const Vec2 mouse_pos = Engine::instance() -> get_mouse_pos();
             
-            cursor->transform = new Transform({mouse_pos.x, mouse_pos.y}, Vec2{0.05f}, {});
+            cursor -> transform = new Transform({ mouse_pos.x, mouse_pos.y }, Vec2::of(.05f), {});
             
-            wkeyd -> color = p_up ? RGBAColors::blue : RGBAColors::white;
-            akeyd -> color = p_left ? RGBAColors::blue : RGBAColors::white;
-            skeyd -> color = p_down ? RGBAColors::blue : RGBAColors::white;
-            dkeyd -> color = p_right ? RGBAColors::blue : RGBAColors::white;
-            lskeyd -> color = p_sprint ? RGBAColors::blue : RGBAColors::white;
+            wkeyd -> color = p_up ? blue : white;
+            akeyd -> color = p_left ? blue : white;
+            skeyd -> color = p_down ? blue : white;
+            dkeyd -> color = p_right ? blue : white;
+            lskeyd -> color = p_sprint ? blue : white;
             
-            wkeyd -> transform = new Transform({el+.18f, et-.08f}, Vec2{0.1f}, {}, true);
-            akeyd -> transform = new Transform({el+.07f, et-.19f}, Vec2{0.1f}, {}, true);
-            skeyd -> transform = new Transform({el+.18f, et-.19f}, Vec2{0.1f}, {}, true);
-            dkeyd -> transform = new Transform({el+.29f, et-.19f}, Vec2{0.1f}, {}, true);
-            lskeyd -> transform = new Transform({el+.40f, et-.08f}, Vec2{0.1f}, {}, true);
-            
-            // If the mouse is over rectangularBangular, change its color
+            wkeyd -> transform = new Transform({ wb_left+.18f, wb_top-.08f }, Vec2::of(.1f), {}, true);
+            akeyd -> transform = new Transform({ wb_left+.07f, wb_top-.19f }, Vec2::of(.1f), {}, true);
+            skeyd -> transform = new Transform({ wb_left+.18f, wb_top-.19f }, Vec2::of(.1f), {}, true);
+            dkeyd -> transform = new Transform({ wb_left+.29f, wb_top-.19f }, Vec2::of(.1f), {}, true);
+            lskeyd -> transform = new Transform({ wb_left+.40f, wb_top-.08f }, Vec2::of(.1f), {}, true);
+
             // todo: properly impl bounds + this is wroooong af
-            Vec2 rectPos = rectangle -> transform -> position;
-            Vec2 rectScale = rectangle -> transform -> scale;
+            const Vec2 rectPos = rectangle -> transform -> position;
+            const Vec2 rectScale = rectangle -> transform -> scale;
             if (mouse_pos.x > rectPos.x
             && mouse_pos.x < rectPos.x + rectScale.x
             && mouse_pos.y > rectPos.y
             && mouse_pos.y < rectPos.y + rectScale.y) {
-                rectangle -> color = RGBAColors::blue;
+                rectangle -> color = blue;
             } else {
-                rectangle -> color = RGBAColors::orange;
+                rectangle -> color = orange;
             }
         }
         
         void draw() override {
             // todo: give scene a default color and draw before the children
-            glClearColor(RGBA(RGBAColors::black));
+            glClearColor(RGBA_F(RGBAColors::black));
             glClear(GL_COLOR_BUFFER_BIT);
             
             draw_children();
@@ -117,7 +116,7 @@ class MyScene final: public Scene {
             should_quit = Engine::instance() -> is_input_pressed("quit");
             
             if (Engine::instance() -> is_input_pressed("reset")) {
-                player->transform->position = Vec2{0};
+                player->transform->position = Vec2::zero();
             }
         }
 };

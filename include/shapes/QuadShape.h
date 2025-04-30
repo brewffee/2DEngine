@@ -13,7 +13,7 @@ class QuadShape: public Shape {
     
     public_methods:
         QuadShape() = default; ~QuadShape() override = default;
-        explicit QuadShape(Transform *transform, RGBAColor color);
+        explicit QuadShape(Transform *transform, const RGBAColor &color);
     
         void gl_draw() override;
 };

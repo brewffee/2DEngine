@@ -1,6 +1,6 @@
 #include "../../include/shapes/Shape.h"
 
-Shape::Shape(Transform *transform, RGBAColor color = RGBAColors::white) {
+Shape::Shape(Transform *transform, const RGBAColor &color = RGBAColors::white) {
     this -> transform = transform;
     this -> color = color;
 }

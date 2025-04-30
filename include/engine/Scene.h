@@ -3,8 +3,9 @@
 #include <iostream>
 #include <unordered_map>
 
-#include "../macros.h"
 #include "SceneItem.h"
+#include "../macros.h"
+#include "../util/Result.h"
 
 /**
  * The class representing the scene. Accepts a map of children and a bool should_quit.

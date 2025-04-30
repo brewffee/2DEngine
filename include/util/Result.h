@@ -2,17 +2,15 @@
 
 #include <string>
 
-#include "../macros.h"
-
 /**
  * A utility class for operations that may either fail or succeed.
  * @tparam T - The type of value to wrap
  */
 template <typename T>
 class Result {
-        T value_;
-        bool has_value_;
-        std::string error_msg_;
+        T _value;
+        bool _has_value;
+        std::string _error_msg;
     
     public:
         /**

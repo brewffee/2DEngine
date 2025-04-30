@@ -1,15 +1,13 @@
 #pragma once
 
-#include <cmath>
-#include <cstdint>
-#include <GLFW/glfw3.h>
 #include <unordered_map>
+#include <GLFW/glfw3.h>
 
-#include "../macros.h"
-#include "../math/Vec2.h"
-#include "../math/Bounds.h"
 #include "Input.h"
 #include "Scene.h"
+#include "../macros.h"
+#include "../math/Bounds.h"
+#include "../math/Vec2.h"
 
 /**
  * The main singleton for the engine
@@ -21,25 +19,25 @@ class Engine {
         double updates_per_frame = 1.0 / 75.0;
         int32_t target_framerate = 0; // todo: actually implement
         bool vsync = false;
-        
+
         int32_t window_width = 800; // todo: require user to set default window size
         int32_t window_height = 600;
         float aspect_ratio = (float) window_width / (float) window_height;
-        
+
         const char* title = "Application";
-        
+
         double current_time{}, elapsed_time{}, prev_time{}, accumulator{};
         int frame_count = 0;
-    
+
         Bounds window_bounds{};
         static Bounds world_bounds; // window_bounds, but adjusted for camera movement
         static Vec2 mouse_pos; // todo: mouse class
-        
+
         GLFWwindow *glfw{};
         int status = 0; // todo: i swear i will use you soon
         double fps{};
-        std::unordered_map<const char*, Input> input_map;
-        std::unordered_map<const char*, Input> scene_list; // todo apparently this is unused, fix that lmao
+        std::unordered_map<const char*, Input> input_map{};
+        std::unordered_map<const char*, Input> scene_list{}; // todo apparently this is unused, fix that lmao
         Scene *default_scene{};
         Scene *current_scene{};
         bool window_focused = false;

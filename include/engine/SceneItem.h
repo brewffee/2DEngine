@@ -1,11 +1,7 @@
 #pragma once
 
-#include <unordered_map>
-#include <string>
-
 #include "../macros.h"
 #include "../math/Transform.h"
-#include "../util/Result.h"
 
 class Scene;
 

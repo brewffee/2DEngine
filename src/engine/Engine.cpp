@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "../../include/engine/Engine.h"
 
 double Engine::_get_current_framerate(int &frames, double &ptime) {
@@ -5,21 +7,21 @@ double Engine::_get_current_framerate(int &frames, double &ptime) {
     
     ++frames;
     if (delta >= 1.0) {
-        double cfps = frames / delta;
+        const double cfps = frames / delta;
         frames = 0;
         ptime = instance() -> current_time ;
         return cfps;
     }
     
-    return -1.0; // Uncalculated
+    return -1.0; // Please stand by !!
 }
 
 void Engine::_glfw_framebuffer_size_callback(GLFWwindow*, int width, int height) {
-    Engine::instance()->_do_reshape_viewport_gl(width, height);
+    instance()->_do_reshape_viewport_gl(width, height);
 }
 
-void Engine::_glfw_key_callback(GLFWwindow*, int key, int scancode, int action, int mods) {
-    Engine::instance()->_do_key_event_gl(key, scancode, action, mods);
+void Engine::_glfw_key_callback(GLFWwindow*, const int key, const int scancode, const int action, int mods) {
+    instance()->_do_key_event_gl(key, scancode, action, mods);
     if (instance() -> current_scene && instance() -> current_scene -> input_enabled)
         instance() -> current_scene -> input();
 }
@@ -33,9 +35,9 @@ void Engine::_glfw_mouse_button_callback(GLFWwindow*, int button, int action, in
         instance() -> current_scene -> input();
 }
 
-void Engine::_glfw_cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
+void Engine::_glfw_cursor_pos_callback(GLFWwindow*, double xpos, double ypos) {
     // Get the current mouse position
-    auto [width, height] = Engine::instance() -> get_window_size();
+    auto [width, height] = instance() -> get_window_size();
     
     // Convert to world coordinates
     mouse_pos = Vec2::to_world({xpos, ypos}, width, height, world_bounds.right, world_bounds.top);
@@ -43,7 +45,7 @@ void Engine::_glfw_cursor_pos_callback(GLFWwindow* window, double xpos, double y
         instance() -> current_scene -> input();
 }
 
-void Engine::_do_key_event_gl(int key, int _scancode, int action, int _mods) {
+void Engine::_do_key_event_gl(const int key, int _scancode, const int action, int _mods) {
     for (auto &[name, input]: input_map) {
         // if any keycode is pressed, the entire input should be marked as pressed
         if (input.keycodes.contains(key)) {
@@ -61,7 +63,7 @@ void Engine::_do_key_event_gl(int key, int _scancode, int action, int _mods) {
     }
 }
 
-void Engine::_do_reshape_viewport_gl(int width, int height) {
+void Engine::_do_reshape_viewport_gl(const int width, const int height) {
     window_width = width;
     window_height = height;
     
@@ -93,7 +95,7 @@ Engine::~Engine() {
     delete current_scene;
 }
 
-void Engine::update_world_bounds(float origin_x, float origin_y) const {
+void Engine::update_world_bounds(const float origin_x, const float origin_y) const {
     world_bounds.left = window_bounds.left - origin_x;
     world_bounds.right = window_bounds.right - origin_x;
     world_bounds.top = window_bounds.top - origin_y;
@@ -113,7 +115,7 @@ bool Engine::is_input_held(const char* name) const {
 }
 
 [[nodiscard]] Vec2 Engine::get_mouse_window_position() const {
-    double cur_x, cur_y;
+    double cur_x{}, cur_y{};
     glfwGetCursorPos(glfw, &cur_x, &cur_y);
     return { cur_x, cur_y };
 }
@@ -149,8 +151,8 @@ void Engine::start() {
     
     // begin event loop
     while (current_scene && !current_scene -> should_quit && !glfwWindowShouldClose(glfw)) {
-        double new_time = glfwGetTime();
-        double frame_time = new_time - current_time;
+        const double new_time = glfwGetTime();
+        const double frame_time = new_time - current_time;
         current_time = new_time;
         elapsed_time += frame_time;
         accumulator += frame_time;
@@ -183,10 +185,10 @@ void Engine::start() {
         if (current_scene -> draw_enabled) current_scene -> draw();
         glfwSwapBuffers(glfw);
         
-        double current_fps = _get_current_framerate(frame_count, prev_time);
-        if (current_fps != -1.0) {
-            fps = current_fps; // update public fps when calculation finishes
-            printf("fps: %f\n", current_fps);
+        const double current_fps = _get_current_framerate(frame_count, prev_time);
+        if (current_fps != -1.0) { // wait for calculation finish
+            fps = current_fps;
+            std::cout << "fps: " << current_fps << "\n";
         }
     }
     

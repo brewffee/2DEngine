@@ -1,9 +1,5 @@
 #pragma once
 
-#include <cstddef>
-
-#include "../macros.h"
-
 /**
  * A utility class representing a key-value pair of type K and V
  * @tparam K - The key of this pair
@@ -20,23 +16,18 @@ class Pair {
          */
         Pair(K k, V v);
         
-        Pair &operator=(const Pair<K, V> &other);
+        Pair &operator=(const Pair &other);
         Pair &operator=(Pair &&other) noexcept;
         
-        bool operator!=(const Pair<K, V> &other) const;
-        bool operator==(const Pair<K, V> &other) const;
+        bool operator!=(const Pair &other) const;
+        bool operator==(const Pair &other) const;
         
         /**
          * Creates a new Pair object where the key and value swap places
          * @return The new swapped Pair
          */
-        Pair<V, K> swap() const;
-        
-        /**
-         * Returns the size of this Pair
-         */
-        [[nodiscard]] size_t size() const;
-        
+        [[nodiscard]] Pair<V, K> swap() const;
+
         /**
          * Accesses the key of this Pair
          */

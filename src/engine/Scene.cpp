@@ -1,8 +1,8 @@
 #include "../../include/engine/Scene.h"
 
 Scene::~Scene() {
-    for (auto &child: children) {
-        delete child.second;
+    for (auto &[_, child]: children) {
+        delete child;
     }
 }
 
@@ -14,7 +14,7 @@ Result<T*> Scene::get_child(const char* key) {
 }
 
 void Scene::add_child(const std::string &name, SceneItem *child, int layer) {
-    children.insert({ name, *&child });
+    children.insert({ name, child });
     child -> scene = this;
     child -> parent = nullptr;
 }
@@ -24,7 +24,7 @@ void Scene::remove_child(const std::string &name) {
 }
 
 void Scene::draw_children() {
-    for (auto child: children) {
-        child.second -> gl_draw();
+    for (auto [_, child]: children) {
+        child -> gl_draw();
     }
 }

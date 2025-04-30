@@ -6,6 +6,11 @@
 #define private_methods private
 
 /**
+ * Attribute specifier shorthand
+ */
+#define attr(...) __attribute__((__VA_ARGS__))
+
+/**
  * No default behavior. Expands to "{}"
  */
 #define no_default {}
@@ -43,13 +48,3 @@
  */
 #define GETTER_REF(t, name) \
     t &get_##name() { return this->name; }
-
-/**
- * This function uses a template parameter "T".
- */
-#define TFUNC template<typename T>
-
-/**
- * This function uses template parameters "K" and "V".
- */
-#define KVFUNC template<typename K, typename V>

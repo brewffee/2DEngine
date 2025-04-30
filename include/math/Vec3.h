@@ -1,9 +1,11 @@
 #pragma once
 
+#include "../macros.h"
+
 /**
- * A struct representing data in 3D space
+ * A struct representing data in 3D space.
  */
-struct Vec3 {
+struct alignas(16) Vec3 {
     float x = 0, y = 0, z = 0;
     
     Vec3();
@@ -11,18 +13,21 @@ struct Vec3 {
     Vec3(double x, double y, double z);
     Vec3(int x, int y, int z);
     
-    explicit Vec3(float xyz);
-    explicit Vec3(double xyz);
-    explicit Vec3(int xyz);
+    /** Creates a Vec3 from a single number */
+    attr(const) static Vec3 of(int xyz);
+    attr(const) static Vec3 of(float xyz);
+    attr(const) static Vec3 of(double xyz);
+
+    /** Returns { 0, 0, 0 }. Equivalent to Vec3() */
+    attr(const) static Vec3 zero();
+
+    attr(pure) Vec3 operator+(const Vec3 &other) const;
+    attr(pure) Vec3 operator-(const Vec3 &other) const;
+    attr(pure) Vec3 operator*(const Vec3 &other) const;
+    attr(pure) Vec3 operator/(const Vec3 &other) const;
     
-    // math operators
-    Vec3 operator+(const Vec3 &other) const;
-    Vec3 operator-(const Vec3 &other) const;
-    Vec3 operator*(const Vec3 &other) const;
-    Vec3 operator/(const Vec3 &other) const;
-    
-    Vec3 operator+(float other) const;
-    Vec3 operator-(float other) const;
-    Vec3 operator*(float other) const;
-    Vec3 operator/(float other) const;
+    attr(pure) Vec3 operator+(float other) const;
+    attr(pure) Vec3 operator-(float other) const;
+    attr(pure) Vec3 operator*(float other) const;
+    attr(pure) Vec3 operator/(float other) const;
 };
