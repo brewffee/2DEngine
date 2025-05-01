@@ -35,17 +35,16 @@ class Engine {
         int32_t target_framerate = 0; // todo: actually implement
         bool vsync = false;
 
-        int32_t window_width = 400; // todo: require user to set default window size, also use vec for size
-        int32_t window_height = 400;
-        float aspect_ratio = (float) window_width / (float) window_height;
+        Vec2 window_size = { 400, 400 }; // todo: require user to set default window size
+        float aspect_ratio = window_size.x / window_size.y;
         ScaleMode scale_mode = ScaleMode::KEEP;
 
-        const char* title = "Application";
+        const char* title = "Application"; // use custom string type
 
         double current_time{}, elapsed_time{}, prev_time{}, accumulator{};
         int frame_count = 0;
 
-        Bounds window_bounds{};
+        Bounds window_bounds;
         static Bounds world_bounds; // window_bounds, but adjusted for camera movement
         static Vec2 mouse_pos; // todo: mouse class
 
@@ -53,7 +52,7 @@ class Engine {
         int status = 0; // todo: i swear i will use you soon
         double fps{};
         std::unordered_map<const char*, Input> input_map{};
-        std::unordered_map<const char*, Input> scene_list{}; // todo apparently this is unused, fix that lmao
+        std::unordered_map<const char*, Input> scene_list; // todo apparently this is unused, fix that lmao
         Scene *default_scene{};
         Scene *current_scene{};
         bool window_focused = false;
@@ -75,7 +74,6 @@ class Engine {
         static void _glfw_cursor_pos_callback(GLFWwindow* window, double xpos, double ypos);
         
         void _do_key_event_gl(int key, int _scancode, int action, int _mods);
-        // todo: scale modes
         // todo: a function similar to this needs to run on instantiation
         void _do_reshape_viewport_gl(int width, int height);
     
@@ -86,8 +84,7 @@ class Engine {
         GETTER_SETTER(double, updates_per_frame);
         GETTER_SETTER(int, target_framerate);
         GETTER_SETTER(bool, vsync);
-        GETTER_SETTER(int32_t, window_width); // todo: i'm absolutely sure these do absolutely nothing
-        GETTER_SETTER(int32_t, window_height);
+        GETTER(Vec2, window_size);
         GETTER_SETTER(ScaleMode, scale_mode);
         GETTER_SETTER(const char*, title);
         
@@ -127,11 +124,17 @@ class Engine {
          * @param name
          */
         bool is_input_held(const char* name) const;
-        
+
+        /**
+         * Gets the mouse's position in window coordinates
+         */
         [[nodiscard]] Vec2 get_mouse_window_position() const;
-        [[nodiscard]] Vec2 get_window_size() const;
-        
-        // todo: allow user to resize the window
+
+        /**
+         * Sets the window's size
+         * @param new_size - Vec2 of new width and height
+         */
+        void set_window_size(const Vec2 &new_size) const;
     
         void start();
 };

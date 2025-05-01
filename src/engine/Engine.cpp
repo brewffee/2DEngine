@@ -16,11 +16,11 @@ double Engine::_get_current_framerate(int &frames, double &ptime) {
     return -1.0; // Please stand by !!
 }
 
-void Engine::_glfw_framebuffer_size_callback(GLFWwindow*, int width, int height) {
+void Engine::_glfw_framebuffer_size_callback(GLFWwindow*, const int width, const int height) {
     instance()->_do_reshape_viewport_gl(width, height);
 }
 
-void Engine::_glfw_key_callback(GLFWwindow*, const int key, const int scancode, const int action, int mods) {
+void Engine::_glfw_key_callback(GLFWwindow*, const int key, const int scancode, const int action, const int mods) {
     instance()->_do_key_event_gl(key, scancode, action, mods);
     if (instance() -> current_scene && instance() -> current_scene -> input_enabled)
         instance() -> current_scene -> input();
@@ -75,21 +75,9 @@ void Engine::_do_reshape_viewport_gl(const int width, const int height) {
             window_bounds.right = aspect_ratio;
             window_bounds.bottom = -1.f;
             window_bounds.top = 1.f;
-
-            glViewport(0, 0, width, height);
-            glOrtho(window_bounds.left, window_bounds.right, window_bounds.bottom, window_bounds.top, -1.0, 1.0);
             break;
-        case ScaleMode::STRETCH:
-            // Distorts the contents to fill the window space
-            window_bounds.left = -1.f;
-            window_bounds.right = 1.f;
-            window_bounds.bottom = -1.f;
-            window_bounds.top = 1.f;
 
-            glViewport(0, 0, width, height);
-            glOrtho(window_bounds.left, window_bounds.right, window_bounds.bottom, window_bounds.top, -1.0, 1.0);
-            break;
-        case ScaleMode::KEEP:
+        case ScaleMode::KEEP: {
             // Sets new bounds based on a static scale factor, using the initial window height
             const float scale_factor = (float) height / 400.f; // todo: use a specified target resolution ?
 
@@ -98,14 +86,22 @@ void Engine::_do_reshape_viewport_gl(const int width, const int height) {
             window_bounds.right = aspect_ratio * scale_factor;
             window_bounds.bottom = -scale_factor;
             window_bounds.top = scale_factor;
+            break;
+        }
 
-            glViewport(0, 0, width, height);
-            glOrtho(window_bounds.left, window_bounds.right, window_bounds.bottom, window_bounds.top, -1.0, 1.0);
+        case ScaleMode::STRETCH: default:
+            // Distorts the contents to fill the window space
+            window_bounds.left = -1.f;
+            window_bounds.right = 1.f;
+            window_bounds.bottom = -1.f;
+            window_bounds.top = 1.f;
             break;
     }
 
-    window_width = width;
-    window_height = height;
+    window_size = { width, height };
+
+    glViewport(0, 0, width, height);
+    glOrtho(window_bounds.left, window_bounds.right, window_bounds.bottom, window_bounds.top, -1.0, 1.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -146,20 +142,21 @@ bool Engine::is_input_held(const char* name) const {
     return { cur_x, cur_y };
 }
 
-[[nodiscard]] Vec2 Engine::get_window_size() const {
-    return { window_width, window_height };
+void Engine::set_window_size(const Vec2 &new_size) const {
+    glfwSetWindowSize(glfw, (int) new_size.x, (int) new_size.y);
 }
+
 
 void Engine::start() {
     if (!glfwInit()) {
-        std::cerr << "Failed to initialize GLFW" << std::endl;
+        std::cerr << "Failed to initialize GLFW\n";
         status = -1;
         return;
     }
     
-    glfw = glfwCreateWindow(window_width, window_height, title, nullptr, nullptr);
+    glfw = glfwCreateWindow((int) window_size.x, (int) window_size.y, title, nullptr, nullptr);
     if (!glfw) {
-        std::cerr << "Failed to create GLFW window" << std::endl;
+        std::cerr << "Failed to create GLFW window\n";
         glfwTerminate();
         status = -1; // todo: use different codes for different errors
         return;
@@ -168,7 +165,7 @@ void Engine::start() {
     glfwMakeContextCurrent(glfw);
     glfwSwapInterval(vsync ? 1 : target_framerate);
     
-    _do_reshape_viewport_gl(window_width, window_height);
+    _do_reshape_viewport_gl((int) window_size.x, (int) window_size.y);
     current_time = glfwGetTime();
     prev_time = current_time;
     
@@ -211,11 +208,14 @@ void Engine::start() {
         }
         
         // Draw
-        if (current_scene -> draw_enabled) current_scene -> draw();
+        if (current_scene -> draw_enabled) {
+            current_scene -> draw_children();
+            current_scene -> draw();
+        }
         glfwSwapBuffers(glfw);
-        
-        const double current_fps = _get_current_framerate(frame_count, prev_time);
-        if (current_fps != -1.0) { // wait for calculation finish
+
+        // wait for the calculation to finish
+        if (const double current_fps = _get_current_framerate(frame_count, prev_time); current_fps != -1.0) {
             fps = current_fps;
             std::cout << "fps: " << current_fps << "\n";
         }
