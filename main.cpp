@@ -53,6 +53,7 @@ class MyScene final: public Scene {
             subGrid = new Grid(Transform::zero(), light_gray, .125f);
             mainGrid = new Grid(Transform::zero(), gray, .5f);
             axes = new Grid(Transform::zero(), white, 0.f);
+
             add_child("axes", axes);
             add_child("mainGrid", mainGrid);
             add_child("subGrid", subGrid);
@@ -84,24 +85,19 @@ class MyScene final: public Scene {
             dkeyd -> transform = new Transform({ wb_left+.29f, wb_top-.19f }, Vec2::of(.1f), {}, true);
             lskeyd -> transform = new Transform({ wb_left+.40f, wb_top-.08f }, Vec2::of(.1f), {}, true);
 
-            // todo: properly impl bounds + this is wroooong af
-            const Vec2 rectPos = rectangle -> transform -> position;
-            const Vec2 rectScale = rectangle -> transform -> scale;
-            if (mouse_pos.x > rectPos.x
-            && mouse_pos.x < rectPos.x + rectScale.x
-            && mouse_pos.y > rectPos.y
-            && mouse_pos.y < rectPos.y + rectScale.y) {
-                rectangle -> color = blue;
+            if (player -> transform -> bounds.contains(mouse_pos)) {
+                player -> color = blue;
             } else {
-                rectangle -> color = orange;
+                player -> color = purple;
             }
         }
         
         void draw() override {
             // todo: give scene a default color and draw before the children
+            //  additionally, move draw_children to internal function
             glClearColor(RGBA_F(RGBAColors::black));
             glClear(GL_COLOR_BUFFER_BIT);
-            
+
             draw_children();
         }
         
@@ -112,11 +108,14 @@ class MyScene final: public Scene {
             p_left = Engine::instance() -> is_input_pressed("left");
             p_right = Engine::instance() -> is_input_pressed("right");
             p_sprint = Engine::instance() -> is_input_pressed("sprint");
-            
             should_quit = Engine::instance() -> is_input_pressed("quit");
             
             if (Engine::instance() -> is_input_pressed("reset")) {
-                player->transform->position = Vec2::zero();
+                player -> transform -> position = Vec2::zero();
+            }
+
+            if (Engine::instance() -> is_input_pressed("debug")) {
+                glfwSetWindowSize(Engine::instance() -> get_glfw(), 800, 400);
             }
         }
 };
@@ -131,6 +130,7 @@ int main() {
     Engine::instance() -> add_input({ "sprint", { GLFW_KEY_LEFT_SHIFT } });
     Engine::instance() -> add_input({ "quit", { GLFW_KEY_ESCAPE } });
     Engine::instance() -> add_input({ "reset", { GLFW_KEY_R } });
+    Engine::instance() -> add_input({ "debug", { GLFW_KEY_TAB } });
     
     Engine::instance() -> set_default_scene(&scene);
     Engine::instance() -> start();

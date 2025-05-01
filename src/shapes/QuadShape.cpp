@@ -6,7 +6,7 @@ QuadShape::QuadShape(Transform *transform, const RGBAColor &color = RGBAColors::
 }
 
 void QuadShape::gl_draw() {
-    auto &[position, scale, rotation, center_origin] = *transform;
+    auto &[position, scale, rotation, center, _] = *transform;
     
     glLoadIdentity();
     glRotatef(rotation.x, 1, 0, 0);
@@ -17,7 +17,7 @@ void QuadShape::gl_draw() {
     glColor3d(RGB(color));
     
     float dest_x{}, dest_y{};
-    if (center_origin) {
+    if (center) {
         const Vec2 offset = scale / 2.f;
         dest_x = position.x - offset.x, dest_y = position.y - offset.y;
     } else dest_x = position.x, dest_y = position.y;

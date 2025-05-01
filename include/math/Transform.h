@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Bounds.h"
 #include "Vec2.h"
 #include "Vec3.h"
 
@@ -8,11 +9,10 @@
  * Accepts construction from a Point, a float size, a Rotation, and a bool center_origin
  */
 struct alignas(64) Transform {
-    Vec2 position;
-    Vec2 scale;
+    Vec2 position, scale;
     Vec3 rotation;
     bool center_origin{};
-    // todo: Alignment alignment{}; ??
+    Bounds bounds;
 
     explicit Transform(Vec2 pos = {}, Vec2 scale = {}, Vec3 rotation = {}, bool center_origin = true);
 
@@ -33,4 +33,9 @@ struct alignas(64) Transform {
 
     /** Returns an empty Transform. Equivalent to new Transform() */
     static Transform *zero();
+
+    /**
+     * Updates the bounds of the Transform based on its position, scale, and rotation.
+     */
+    void update_bounds();
 };

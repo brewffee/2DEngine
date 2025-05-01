@@ -9,7 +9,7 @@ Grid::Grid(Transform *transform, const RGBAColor &color = RGBAColors::white, con
 }
 
 void Grid::gl_draw() {
-    auto &[position, scale, rotation, center_origin] = *transform;
+    auto &[position, scale, rotation, _, __] = *transform;
     auto &[el, er, et, eb] = Engine::instance() -> get_world_bounds();
 
     // draw only the axes

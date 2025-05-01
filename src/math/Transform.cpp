@@ -21,3 +21,9 @@ Transform *Transform::from_rotation(float x, float y, float z) { return new Tran
 Transform *Transform::from_rotation(float xyz) { return new Transform({}, {}, { xyz, xyz, xyz }); }
 
 Transform *Transform::zero() { return new Transform; }
+
+// //////////////////////////////////////////////////////////////////////////////////////////
+
+void Transform::update_bounds() {
+    bounds = Bounds::from(position, scale, center_origin);
+}

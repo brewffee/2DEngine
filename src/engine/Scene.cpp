@@ -23,8 +23,15 @@ void Scene::remove_child(const std::string &name) {
     children.erase(name);
 }
 
+void Scene::update_children() {
+    for (const auto &[_, child]: children) {
+        child -> transform -> update_bounds();
+        // todo: child -> update();
+    }
+}
+
 void Scene::draw_children() {
-    for (auto [_, child]: children) {
+    for (auto &[_, child]: children) {
         child -> gl_draw();
     }
 }

@@ -27,11 +27,11 @@ class Scene {
         Result<T*> get_child(const char* key);
         void add_child(const std::string &name, SceneItem *child, int layer = 0);
         void remove_child(const std::string &name);
-        
+
+        virtual void update_children();
         virtual void update(double delta) no_default;
     
-        // todo: layers
-        virtual void draw_children(); // might not wanna override this? idk
+        virtual void draw_children();
         
         virtual void draw() no_default;
         virtual void input() no_default;
