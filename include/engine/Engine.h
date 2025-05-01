@@ -10,6 +10,21 @@
 #include "../math/Vec2.h"
 
 /**
+ * Enum class for different content scaling modes
+ * - SCALE: scale content size to fit
+ * - STRETCH: stretch contents when a dimension is too small
+ * - KEEP: contents stay the same size independent of window
+ *
+ * todo: add aspect-preserving modes
+ * todo: are these the right terms? i'm not well versed
+ */
+enum class ScaleMode: uint8_t {
+    SCALE, // scale content size to fit
+    STRETCH, // stretch contents when a dimension is too small
+    KEEP // contents stay the same size independent of window
+};
+
+/**
  * The main singleton for the engine
  */
 class Engine {
@@ -20,9 +35,10 @@ class Engine {
         int32_t target_framerate = 0; // todo: actually implement
         bool vsync = false;
 
-        int32_t window_width = 800; // todo: require user to set default window size
-        int32_t window_height = 600;
+        int32_t window_width = 400; // todo: require user to set default window size, also use vec for size
+        int32_t window_height = 400;
         float aspect_ratio = (float) window_width / (float) window_height;
+        ScaleMode scale_mode = ScaleMode::KEEP;
 
         const char* title = "Application";
 
@@ -70,8 +86,9 @@ class Engine {
         GETTER_SETTER(double, updates_per_frame);
         GETTER_SETTER(int, target_framerate);
         GETTER_SETTER(bool, vsync);
-        GETTER_SETTER(int32_t, window_width);
+        GETTER_SETTER(int32_t, window_width); // todo: i'm absolutely sure these do absolutely nothing
         GETTER_SETTER(int32_t, window_height);
+        GETTER_SETTER(ScaleMode, scale_mode);
         GETTER_SETTER(const char*, title);
         
         GETTER_REF(Bounds, window_bounds);

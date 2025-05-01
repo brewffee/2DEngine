@@ -64,23 +64,49 @@ void Engine::_do_key_event_gl(const int key, int _scancode, const int action, in
 }
 
 void Engine::_do_reshape_viewport_gl(const int width, const int height) {
-    window_width = width;
-    window_height = height;
-    
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    
-    glViewport(0, 0, width, height);
-    
-    // i really forgot how tf this works :(
-    aspect_ratio = (float) width / (float) height;
-    window_bounds.left = -1.f * aspect_ratio;
-    window_bounds.right = 1.f * aspect_ratio;
-    window_bounds.bottom = -1.f;
-    window_bounds.top = 1.f;
-    
-    glOrtho(window_bounds.left, window_bounds.right, window_bounds.bottom, window_bounds.top, -1.0, 1.0);
-    
+
+    switch (scale_mode) {
+        case ScaleMode::SCALE:
+            // Sets new bounds based on the aspect ratio, using Y as the base
+            aspect_ratio = (float) width / (float) height;
+            window_bounds.left = -aspect_ratio;
+            window_bounds.right = aspect_ratio;
+            window_bounds.bottom = -1.f;
+            window_bounds.top = 1.f;
+
+            glViewport(0, 0, width, height);
+            glOrtho(window_bounds.left, window_bounds.right, window_bounds.bottom, window_bounds.top, -1.0, 1.0);
+            break;
+        case ScaleMode::STRETCH:
+            // Distorts the contents to fill the window space
+            window_bounds.left = -1.f;
+            window_bounds.right = 1.f;
+            window_bounds.bottom = -1.f;
+            window_bounds.top = 1.f;
+
+            glViewport(0, 0, width, height);
+            glOrtho(window_bounds.left, window_bounds.right, window_bounds.bottom, window_bounds.top, -1.0, 1.0);
+            break;
+        case ScaleMode::KEEP:
+            // Sets new bounds based on a static scale factor, using the initial window height
+            const float scale_factor = (float) height / 400.f; // todo: use a specified target resolution ?
+
+            aspect_ratio = (float) width / (float) height;
+            window_bounds.left = aspect_ratio * -scale_factor;
+            window_bounds.right = aspect_ratio * scale_factor;
+            window_bounds.bottom = -scale_factor;
+            window_bounds.top = scale_factor;
+
+            glViewport(0, 0, width, height);
+            glOrtho(window_bounds.left, window_bounds.right, window_bounds.bottom, window_bounds.top, -1.0, 1.0);
+            break;
+    }
+
+    window_width = width;
+    window_height = height;
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -177,7 +203,10 @@ void Engine::start() {
         
         // Update
         while (accumulator >= updates_per_frame) {
-            if (current_scene -> update_enabled) current_scene -> update(frame_time);
+            if (current_scene -> update_enabled) {
+                current_scene -> update_children();
+                current_scene -> update(frame_time);
+            }
             accumulator -= updates_per_frame;
         }
         
