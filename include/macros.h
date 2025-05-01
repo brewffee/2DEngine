@@ -6,9 +6,17 @@
 #define private_methods private
 
 /**
+ * Aliases for compiler-specific atttributes
+ */
+#ifdef __GNUC__
+    #define PURE gnu::pure
+    #define CONST gnu::const
+#endif // todo: msvc
+
+/**
  * Attribute specifier shorthand
  */
-#define attr(...) __attribute__((__VA_ARGS__))
+#define attr(...) [[__VA_ARGS__]]
 
 /**
  * No default behavior. Expands to "{}"
