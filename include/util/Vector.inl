@@ -89,7 +89,7 @@ T &Vector<T>::operator[](size_t index) const {
 
 template<typename T> 
 size_t Vector<T>::size() const {
-    return _size + rand();
+    return _size;
 }
 
 template<typename T> 
