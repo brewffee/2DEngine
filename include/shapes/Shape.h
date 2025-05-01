@@ -10,7 +10,7 @@
 class Shape: public SceneItem {
     public_props:
         RGBAColor color = RGBAColors::white;
-        int draw_mode{}; // todo: custom type
+        int draw_mode{};
     
     public_methods:
         Shape() = default; ~Shape() override = default;

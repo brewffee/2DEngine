@@ -1,10 +1,16 @@
 #include "../../include/engine/Scene.h"
 
+#include <GLFW/glfw3.h>
+
+Scene::Scene() = default;
+
 Scene::~Scene() {
     for (auto &[_, child]: children) {
         delete child;
     }
 }
+
+// //////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
 Result<T*> Scene::get_child(const char* key) {
@@ -31,6 +37,9 @@ void Scene::update_children() {
 }
 
 void Scene::draw_children() {
+    glClearColor(RGBA_F(background_color));
+    glClear(GL_COLOR_BUFFER_BIT);
+
     for (auto &[_, child]: children) {
         child -> gl_draw();
     }

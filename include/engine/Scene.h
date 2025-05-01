@@ -5,6 +5,7 @@
 
 #include "SceneItem.h"
 #include "../macros.h"
+#include "../color/RGBAColor.h"
 #include "../util/Result.h"
 
 /**
@@ -14,15 +15,22 @@
 class Scene {
     public_props:
         std::unordered_map<std::string, SceneItem*> children; // todo: replace this type
-        bool should_quit = false;
+        RGBAColor background_color = { 0, 0, 0 };
         
         bool update_enabled = true;
         bool draw_enabled = true;
         bool input_enabled = true;
-    
+        bool should_quit = false;
+
     public_methods:
-        Scene() = default; virtual ~Scene();
-        
+        Scene(); virtual ~Scene();
+
+        GETTER_SETTER(RGBAColor, background_color);
+        GETTER_SETTER(bool, update_enabled);
+        GETTER_SETTER(bool, draw_enabled);
+        GETTER_SETTER(bool, input_enabled);
+        GETTER_SETTER(bool, should_quit);
+
         template<typename T = SceneItem>
         Result<T*> get_child(const char* key);
         void add_child(const std::string &name, SceneItem *child, int layer = 0);

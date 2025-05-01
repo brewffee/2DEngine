@@ -92,15 +92,6 @@ class MyScene final: public Scene {
             }
         }
         
-        void draw() override {
-            // todo: give scene a default color and draw before the children
-            //  additionally, move draw_children to internal function
-            glClearColor(RGBA_F(RGBAColors::black));
-            glClear(GL_COLOR_BUFFER_BIT);
-
-            draw_children();
-        }
-        
         // todo: pass input as a param instead of having to access singleton directly
         void input() override {
             p_up = Engine::instance() -> is_input_pressed("up");
