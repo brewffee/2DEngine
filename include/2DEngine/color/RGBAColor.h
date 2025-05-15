@@ -8,14 +8,6 @@
 #define RGB(x) (x).r, (x).g, (x).b
 
 /**
- * Same as RGB(x), but passes parameters as floats
- */
-#define RGB_F(x) \
-    static_cast<float>((x).r), \
-    static_cast<float>((x).g), \
-    static_cast<float>((x).b)
-
-/**
  * Spreads the RGBA values of a color for use in functions that accept a 4-tuple of r, g, b, and a arguments.
  * It is recommended that you define your color elsewhere before passing it to this macro to avoid
  * unnecessary recalculations.
@@ -23,21 +15,12 @@
 #define RGBA(x) (x).r, (x).g, (x).b, (x).a
 
 /**
- * Same as RGBA(x), but passes parameters as floats
- */
-#define RGBA_F(x) \
-    static_cast<float>((x).r), \
-    static_cast<float>((x).g), \
-    static_cast<float>((x).b), \
-    static_cast<float>((x).a)
-
-/**
  * A struct representing a color in RGBA space. Accepts construction from either a hex value or RGBA values.
  * Provides the properties r, g, b, and a. Instances of this struct can be spread using the `RGB` macro or
  * `RGBA` macros.
  */
-struct alignas(32) RGBAColor {
-    double r, g, b, a;
+struct alignas(4) RGBAColor {
+    float r{}, g{}, b{}, a{};
     
     /**
      * Constructs a new color from a hex code

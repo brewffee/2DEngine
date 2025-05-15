@@ -1,4 +1,4 @@
-#include "../../include/engine/Scene.h"
+#include "2DEngine/engine/Scene.h"
 
 #include <GLFW/glfw3.h>
 
@@ -37,7 +37,7 @@ void Scene::update_children() {
 }
 
 void Scene::draw_children() {
-    glClearColor(RGBA_F(background_color));
+    glClearColor(RGBA(background_color));
     glClear(GL_COLOR_BUFFER_BIT);
 
     for (auto &[_, child]: children) {

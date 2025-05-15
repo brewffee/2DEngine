@@ -1,5 +1,5 @@
-#include "../../include/math/Bounds.h"
-#include "../../include/math/Vec2.h"
+#include "2DEngine/math/Bounds.h"
+#include "2DEngine/math/Vec2.h"
 
 Bounds::Bounds() = default;
 
@@ -17,11 +17,10 @@ Bounds::Bounds(const int l, const int r, const int t, const int b):
 Bounds Bounds::from(const Vec2 &point, const Vec2 &size, const bool centered) {
     if (centered) {
         return {
-            point.x - (size.x / 2),     // left
-            point.x + (size.x / 2),     // right
-            point.y + (size.y / 2),     // top
-            point.y - (size.y / 2)      // bottom
-
+            point.x - size.x / 2,     // left
+            point.x + size.x / 2,     // right
+            point.y + size.y / 2,     // top
+            point.y - size.y / 2      // bottom
         };
     }
 

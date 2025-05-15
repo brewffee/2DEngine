@@ -4,18 +4,23 @@ set(CMAKE_CXX_STANDARD 26)
 # Project information
 project(2DEngine VERSION 1.0.0 LANGUAGES CXX)
 
+# Local files
 file(GLOB_RECURSE sources "src/*.cpp")
-file(GLOB_RECURSE headers "include/*.h")
-file(GLOB_RECURSE inline "include/*.inl")
+file(GLOB_RECURSE headers "include/2DEngine/*.h")
+file(GLOB_RECURSE inline "include/2DEngine/*.inl")
 
-# Dependencies
+# Local dependencies
+add_subdirectory(vendor)
+include_directories(vendor/include)
+set(LOCAL_LIBS glad)
+
+# System dependencies
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
-find_package(Vulkan REQUIRED)
 
 include_directories(
+    include
     ${OPENGL_INCLUDE_DIRS}
-    ${Vulkan_INCLUDE_DIR}
     ${GLFW3_INCLUDE_DIR}
 )
 
@@ -23,7 +28,7 @@ include_directories(
 add_executable(2DEngine main.cpp ${headers} ${sources} ${inline})
 target_link_libraries(2DEngine
     SDL3_image glfw
+    ${LOCAL_LIBS}
     ${OPENGL_LIBRARIES}
-    ${Vulkan_LIBRARY}
     ${GLFW3_LIBRARIES}
 )

@@ -1,4 +1,4 @@
-#include "../../include/shapes/Shape.h"
+#include "2DEngine/shapes/Shape.h"
 
 Shape::Shape(Transform *transform, const RGBAColor &color = RGBAColors::white) {
     this -> transform = transform;

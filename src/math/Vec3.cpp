@@ -1,4 +1,4 @@
-#include "../../include/math/Vec3.h"
+#include "2DEngine/math/Vec3.h"
 
 Vec3::Vec3() = default;
 Vec3::Vec3(const float x, const float y, const float z): x(x), y(y), z(z) {}

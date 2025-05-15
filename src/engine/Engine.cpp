@@ -1,6 +1,14 @@
 #include <cmath>
 
-#include "../../include/engine/Engine.h"
+#include "2DEngine/engine/Engine.h"
+
+#define GLAD_GL_IMPLEMENTATION
+#include <glad/gl.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+#include <glm/ext/matrix_clip_space.hpp>
+
+#include "2DEngine/shaders/ShaderProgram.h"
 
 double Engine::_get_current_framerate(int &frames, double &ptime) {
     const double delta = instance() -> current_time - ptime;
@@ -9,7 +17,7 @@ double Engine::_get_current_framerate(int &frames, double &ptime) {
     if (delta >= 1.0) {
         const double cfps = frames / delta;
         frames = 0;
-        ptime = instance() -> current_time ;
+        ptime = instance() -> current_time;
         return cfps;
     }
     
@@ -38,9 +46,10 @@ void Engine::_glfw_mouse_button_callback(GLFWwindow*, int button, int action, in
 void Engine::_glfw_cursor_pos_callback(GLFWwindow*, double xpos, double ypos) {
     // Get the current mouse position
     auto [width, height] = instance() -> get_window_size();
+    auto &[left, right, top, bottom] = instance() -> get_window_bounds();
     
     // Convert to world coordinates
-    mouse_pos = Vec2::to_world({xpos, ypos}, width, height, world_bounds.right, world_bounds.top);
+    instance() -> mouse_pos = Vec2::to_world({xpos, ypos}, width, height, right, top);
     if (instance() -> current_scene && instance() -> current_scene -> input_enabled)
         instance() -> current_scene -> input();
 }
@@ -64,47 +73,46 @@ void Engine::_do_key_event_gl(const int key, int _scancode, const int action, in
 }
 
 void Engine::_do_reshape_viewport_gl(const int width, const int height) {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+    aspect_ratio = (float) width / (float) height;
+    auto &[left, right, top, bottom] = window_bounds;
 
     switch (scale_mode) {
         case ScaleMode::SCALE:
             // Sets new bounds based on the aspect ratio, using Y as the base
-            aspect_ratio = (float) width / (float) height;
-            window_bounds.left = -aspect_ratio;
-            window_bounds.right = aspect_ratio;
-            window_bounds.bottom = -1.f;
-            window_bounds.top = 1.f;
+            left = -aspect_ratio;
+            right = aspect_ratio;
+            bottom = -1.f;
+            top = 1.f;
             break;
 
         case ScaleMode::KEEP: {
-            // Sets new bounds based on a static scale factor, using the initial window height
-            const float scale_factor = (float) height / 400.f; // todo: use a specified target resolution ?
+            // Sets new bounds comparative to the default size
+            // todo: set resolution to base these numbers on
+            const Vec2 original_size = Vec2::of(400);
+            const float width_ratio = (float) width / original_size.x;
+            const float height_ratio = (float) height / original_size.y;
 
-            aspect_ratio = (float) width / (float) height;
-            window_bounds.left = aspect_ratio * -scale_factor;
-            window_bounds.right = aspect_ratio * scale_factor;
-            window_bounds.bottom = -scale_factor;
-            window_bounds.top = scale_factor;
+            left = -width_ratio;
+            right = width_ratio;
+            bottom = -height_ratio;
+            top = height_ratio;
             break;
         }
 
         case ScaleMode::STRETCH: default:
             // Distorts the contents to fill the window space
-            window_bounds.left = -1.f;
-            window_bounds.right = 1.f;
-            window_bounds.bottom = -1.f;
-            window_bounds.top = 1.f;
+            left = -1.f;
+            right = 1.f;
+            bottom = -1.f;
+            top = 1.f;
             break;
     }
 
     window_size = { width, height };
 
     glViewport(0, 0, width, height);
-    glOrtho(window_bounds.left, window_bounds.right, window_bounds.bottom, window_bounds.top, -1.0, 1.0);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    projection_matrix = glm::ortho(left, right, bottom, top);
+    vp_shader.set_uniform("projection_matrix", projection_matrix);
 }
 
 // /////////////////////////////////////////////////////////////////////////////////////////
@@ -117,7 +125,7 @@ Engine::~Engine() {
     delete current_scene;
 }
 
-void Engine::update_world_bounds(const float origin_x, const float origin_y) const {
+void Engine::update_world_bounds(const float origin_x, const float origin_y) {
     world_bounds.left = window_bounds.left - origin_x;
     world_bounds.right = window_bounds.right - origin_x;
     world_bounds.top = window_bounds.top - origin_y;
@@ -146,14 +154,17 @@ void Engine::set_window_size(const Vec2 &new_size) const {
     glfwSetWindowSize(glfw, (int) new_size.x, (int) new_size.y);
 }
 
+void Engine::set_window_size(const float x, const float y) const {
+    glfwSetWindowSize(glfw, (int) x, (int) y);
+}
 
-void Engine::start() {
+void Engine::init() {
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW\n";
         status = -1;
         return;
     }
-    
+
     glfw = glfwCreateWindow((int) window_size.x, (int) window_size.y, title, nullptr, nullptr);
     if (!glfw) {
         std::cerr << "Failed to create GLFW window\n";
@@ -161,10 +172,19 @@ void Engine::start() {
         status = -1; // todo: use different codes for different errors
         return;
     }
-    
+
     glfwMakeContextCurrent(glfw);
+    if (!gladLoadGL(glfwGetProcAddress)) {
+        std::cerr << "Failed to initialize OpenGL context\n";
+        glfwTerminate();
+        status = -1;
+    }
+}
+
+void Engine::start() {
     glfwSwapInterval(vsync ? 1 : target_framerate);
-    
+    vp_shader.create();
+    vp_shader.use();
     _do_reshape_viewport_gl((int) window_size.x, (int) window_size.y);
     current_time = glfwGetTime();
     prev_time = current_time;
@@ -228,7 +248,5 @@ void Engine::start() {
     status = 0; // :)
 }
 
-// Initialize static members
+// Initialize singleton
 Engine* Engine::instance_ = nullptr;
-Bounds Engine::world_bounds;
-Vec2 Engine::mouse_pos;

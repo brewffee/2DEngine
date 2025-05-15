@@ -1,6 +1,10 @@
 #pragma once
 
 #include <unordered_map>
+
+#define GLAD_GL_IMPLEMENTATION
+#include <glad/gl.h>
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 #include "Input.h"
@@ -8,6 +12,7 @@
 #include "../macros.h"
 #include "../math/Bounds.h"
 #include "../math/Vec2.h"
+#include "2DEngine/shaders/ShaderProgram.h"
 
 /**
  * Enum class for different content scaling modes
@@ -35,9 +40,14 @@ class Engine {
         int32_t target_framerate = 0; // todo: actually implement
         bool vsync = false;
 
-        Vec2 window_size = { 400, 400 }; // todo: require user to set default window size
+        Vec2 window_size = { 400, 400 };
         float aspect_ratio = window_size.x / window_size.y;
-        ScaleMode scale_mode = ScaleMode::KEEP;
+        ScaleMode scale_mode = ScaleMode::STRETCH;
+        glm::mat4 projection_matrix{};
+        ShaderProgram vp_shader = {
+            "../src/shaders/basic/vertex.glsl",
+            "../src/shaders/basic/fragment.glsl"
+        };
 
         const char* title = "Application"; // use custom string type
 
@@ -45,14 +55,14 @@ class Engine {
         int frame_count = 0;
 
         Bounds window_bounds;
-        static Bounds world_bounds; // window_bounds, but adjusted for camera movement
-        static Vec2 mouse_pos; // todo: mouse class
+        Bounds world_bounds; // window_bounds, but adjusted for camera movement
+        Vec2 mouse_pos; // todo: mouse class
 
         GLFWwindow *glfw{};
+
         int status = 0; // todo: i swear i will use you soon
         double fps{};
         std::unordered_map<const char*, Input> input_map{};
-        std::unordered_map<const char*, Input> scene_list; // todo apparently this is unused, fix that lmao
         Scene *default_scene{};
         Scene *current_scene{};
         bool window_focused = false;
@@ -72,20 +82,21 @@ class Engine {
         static void _glfw_key_callback(GLFWwindow*, int key, int scancode, int action, int mods);
         static void _glfw_mouse_button_callback(GLFWwindow*, int button, int action, int mods);
         static void _glfw_cursor_pos_callback(GLFWwindow* window, double xpos, double ypos);
-        
+
         void _do_key_event_gl(int key, int _scancode, int action, int _mods);
+
         // todo: a function similar to this needs to run on instantiation
         void _do_reshape_viewport_gl(int width, int height);
-    
+
     public_methods:
         ~Engine();
-        
         // (T, var) Defines and implements basic T get_var() and void set_var(T var_) methods
         GETTER_SETTER(double, updates_per_frame);
         GETTER_SETTER(int, target_framerate);
         GETTER_SETTER(bool, vsync);
         GETTER(Vec2, window_size);
         GETTER_SETTER(ScaleMode, scale_mode);
+        GETTER_REF(glm::mat4, projection_matrix);
         GETTER_SETTER(const char*, title);
         
         GETTER_REF(Bounds, window_bounds);
@@ -93,7 +104,7 @@ class Engine {
         GETTER(Vec2, mouse_pos);
         
         GETTER(Scene*, current_scene); // setting would be handled by queue system
-        GETTER_SETTER(Scene*, default_scene); //todo: add to scene list
+        GETTER_SETTER(Scene*, default_scene);
         GETTER(double, fps);
         GETTER(bool, window_focused);
         GETTER(GLFWwindow*, glfw);
@@ -105,7 +116,7 @@ class Engine {
          * @param origin_x
          * @param origin_y
          */
-        void update_world_bounds(float origin_x = 0.f, float origin_y = 0.f) const;
+        void update_world_bounds(float origin_x = 0.f, float origin_y = 0.f);
         
         /**
          * Adds a new input structure to the input map
@@ -130,11 +141,21 @@ class Engine {
          */
         [[nodiscard]] Vec2 get_mouse_window_position() const;
 
+        // todo: allow setting initial window size
+
         /**
          * Sets the window's size
          * @param new_size - Vec2 of new width and height
          */
         void set_window_size(const Vec2 &new_size) const;
-    
+
+        /**
+         *  Sets the window's size
+         *  @param x - New width of the window
+         *  @param y - New height of the window
+         */
+        void set_window_size(float x, float y) const; // todo
+
+        void init();
         void start();
 };

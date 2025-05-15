@@ -1,4 +1,4 @@
-#include "../../include/math/Vec2.h"
+#include "2DEngine/math/Vec2.h"
 
 Vec2::Vec2() = default;
 Vec2::Vec2(const float x, const float y): x(x), y(y) {}

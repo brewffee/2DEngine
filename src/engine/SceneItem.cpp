@@ -1,4 +1,4 @@
-#include "../../include/engine/SceneItem.h"
+#include "2DEngine/engine/SceneItem.h"
 
 SceneItem::SceneItem(Transform *transform) {
     this -> transform = transform;

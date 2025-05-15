@@ -35,11 +35,11 @@ struct alignas(16) Bounds {
      * Checks if a point is within this bounding area
      * @param point The point to check
      */
-    attr(nodiscard) bool contains(const Vec2 &point) const;
+    attr(PURE, nodiscard) bool contains(const Vec2 &point) const;
 
     /**
      * Checks if another bounding area interesects with this one
      * @param other The other bounding area to check
      */
-    attr(nodiscard) bool intersects(const Bounds &other) const;
+    attr(PURE, nodiscard) bool intersects(const Bounds &other) const;
 };

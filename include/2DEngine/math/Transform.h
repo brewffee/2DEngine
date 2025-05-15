@@ -11,7 +11,7 @@
 struct alignas(64) Transform {
     Vec2 position, scale;
     Vec3 rotation;
-    bool center_origin{};
+    bool center_origin = true;
     Bounds bounds;
 
     explicit Transform(Vec2 pos = {}, Vec2 scale = {}, Vec3 rotation = {}, bool center_origin = true);
