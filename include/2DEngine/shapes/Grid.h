@@ -22,7 +22,7 @@ class Grid: public Shape {
         GETTER_SETTER(RGBAColor, color);
         GETTER_SETTER(float, interval);
         GETTER_SETTER(float, line_width);
-        GETTER_SETTER(int, max_vertices);
+        GETTER_SETTER(long, max_vertices);
 
         void gl_draw() override;
 };

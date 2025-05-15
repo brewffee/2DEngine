@@ -3,7 +3,7 @@
 #include <vector>
 #include <glad/gl.h>
 
-struct VertexData {
+struct VertexData { //todo: move to somewhere more appropriate
     Vec2 position;
     RGBAColor color;
 };
@@ -33,9 +33,7 @@ Grid::Grid(Transform *transform, const RGBAColor &color = RGBAColors::white, con
 void Grid::gl_draw() {
     auto &[position, scale, rotation, _c, _v] = *transform;
 
-    // something's wrong with my current Vector impl,
-    // will hold off until further debugging
-    std::vector<VertexData> line_data;
+    Vector<VertexData> line_data;
 
     auto &[el, er, et, eb] = Engine::instance() -> get_world_bounds();
     const glm::mat4 &projection_matrix = Engine::instance() -> get_projection_matrix();

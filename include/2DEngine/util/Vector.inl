@@ -10,18 +10,24 @@ Vector<T>::Vector():
 
 template<typename T> 
 Vector<T>::Vector(std::initializer_list<T> list) {
-    _data = new T[list.size()];
     _size = list.size();
     _capacity = list.size();
-    std::copy(list.begin(), list.end(), _data);
+    _data = static_cast<T*>(operator new[](sizeof(T) * _capacity));
+
+    for (int i = 0; i < list.size(); i++) {
+        new (&_data[i]) T(list.begin()[i]);
+    }
 }
 
 template<typename T> 
 Vector<T>::Vector(const Vector &other) {
-    T* new_data = new T[other._capacity];
-    for (size_t i = 0; i < other._size; ++i) {
-        new_data[i] = other._data[i];
+    T* new_data = static_cast<T*>(operator new[](sizeof(T) * other._capacity));
+
+    for (size_t i = 0; i < other._size; i++) {
+        new (&new_data[i]) T(other._data[i]);
+        if constexpr (std::is_trivially_destructible_v<T>) other._data[i].~T();
     }
+
     _data = new_data;
     _size = other._size;
     _capacity = other._capacity;
@@ -45,7 +51,8 @@ Vector<T>::Vector(const size_t initial_capacity):
 
 template<typename T> 
 Vector<T>::~Vector() {
-    delete[] _data;
+    for (size_t i = 0; i < _size; i++) _data[i].~T();
+    operator delete[](_data);
 }
 
 // //////////////////////////////////////////////////////////////////////////////////////////
@@ -53,11 +60,14 @@ Vector<T>::~Vector() {
 template<typename T> 
 Vector<T> &Vector<T>::operator=(const Vector &other) {
     if (this != &other) {
-        T* new_data = new T[other._capacity];
-        for (size_t i = 0; i < other._size; ++i) {
-            new_data[i] = other._data[i];
+        T* new_data = static_cast<T*>(operator new[](sizeof(T) * other._capacity));
+
+        for (size_t i = 0; i < other._size; i++) {
+            new (&new_data[i]) T(other._data[i]);
+            if constexpr (std::is_trivially_destructible_v<T>) other._data[i].~T();
         }
-        delete[] _data;
+
+        operator delete[](_data);
         _data = new_data;
         _size = other._size;
         _capacity = other._capacity;
@@ -68,7 +78,7 @@ Vector<T> &Vector<T>::operator=(const Vector &other) {
 template<typename T> 
 Vector<T> &Vector<T>::operator=(Vector &&other) noexcept {
     if (this != &other) {
-        delete[] _data;
+        operator delete[](_data);
         _data = other._data;
         _size = other._size;
         _capacity = other._capacity;
@@ -199,7 +209,7 @@ Result<size_t> Vector<T>::index_of(const T &value) const {
         if (_data[i] == value) return Result(i);
     }
     
-    return Result<size_t>("Could not find value"); // not found
+    return Result<size_t>("Could not find value");
 }
 
 template<typename T> 
@@ -211,10 +221,11 @@ Vector<size_t> Vector<T>::indexes_of(const T &value) const {
     return indexes;
 }
 
+#include <iostream>
 template<typename T> 
 Vector<T> Vector<T>::insert(size_t index, const T &value) {
     if (index > _size) throw std::out_of_range("Index out of range");
-    if (_size == _capacity) resize(_capacity * 2);
+    if (_size == _capacity) resize(_capacity == 0 ? 1 : _capacity * 2);
     for (size_t i = _size; i > index; --i) {
         _data[i] = _data[i - 1];
     }
@@ -273,13 +284,16 @@ void Vector<T>::reserve(const size_t new_capacity) {
     }
 }
 
-template<typename T> 
+template<typename T>
 void Vector<T>::resize(const size_t new_capacity) {
-    T* new_data = new T[new_capacity];
-    for (size_t i = 0; i < _size; ++i) {
-        new_data[i] = _data[i];
+    T* new_data = static_cast<T*>(operator new[](sizeof(T) * new_capacity));
+
+    for (size_t i = 0; i < _size; i++) {
+        new (&new_data[i]) T(_data[i]);
+        if constexpr (std::is_trivially_destructible_v<T>) _data[i].~T();
     }
-    delete[] _data;
+
+    operator delete[](_data);
     _data = new_data;
     _capacity = new_capacity;
 }
