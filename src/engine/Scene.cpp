@@ -6,7 +6,7 @@ Scene::Scene() = default;
 
 Scene::~Scene() {
     for (auto &[_, layer]: children) {
-        for (const auto child: layer) {
+        for (auto const *child: layer) {
             delete child;
         }
     }
@@ -36,10 +36,10 @@ void Scene::add_child(SceneItem *child, const int layer) {
 void Scene::remove_child(const std::string &name) {
     for (auto &[_, layer]: children) {
         for (auto &child: layer) {
-            if (const Result index = layer.index_of(child); index.ok()) {
-                layer.erase(index.value());
-                delete child;
-                return;
+            if (child -> name == name) {
+                if (const Result index = layer.index_of(child); index.ok()) {
+                    layer.erase(index.value());
+                }
             }
         }
     }

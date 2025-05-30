@@ -16,7 +16,7 @@ class SceneItem {
     public_props:
         Transform *transform{};
 
-        const char *name{};
+        const char *name = "unknown";
         
         // root items will return nullptr for parent, watch out!!!
         Scene *scene{};

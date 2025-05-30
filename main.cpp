@@ -61,6 +61,7 @@ class MyScene final: public Scene {
             eleft = new QuadShape(new Transform({ wb_left, 0.f }, Vec2::of(.125f)), white);
             eright = new QuadShape(new Transform({ wb_right, 0.f }, Vec2::of(.125f)), white);
 
+            etop -> name = "etop";
             add_child(etop, UI_LAYER);
             add_child(ebottom, UI_LAYER);
             add_child(eleft, UI_LAYER);
@@ -123,7 +124,7 @@ class MyScene final: public Scene {
             }
 
             if (Engine::instance() -> is_input_pressed("debug")) {
-                Engine::instance() -> set_window_size({170, 170});
+                remove_child("etop");
             }
         }
 };
