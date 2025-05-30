@@ -7,6 +7,12 @@
 
 using namespace RGBAColors;
 
+enum Layers: uint8_t {
+    UI_LAYER            = 4,
+    MAIN_LAYER          = 2,
+    BACKGROUND_LAYER    = 0
+};
+
 class MyScene final: public Scene {
     QuadShape *cursor, *rectangle, *player;
     Grid *axes, *mainGrid, *subGrid;
@@ -26,29 +32,28 @@ class MyScene final: public Scene {
             dkeyd = new QuadShape(new Transform({ wb_right + .28f, wb_top - .18f }, Vec2::of(.1f)), white);
             lskeyd = new QuadShape(new Transform({ wb_right + .43f, wb_top - .08f }, Vec2::of(.1f)), white);
 
-            add_child("w", wkeyd);
-            add_child("a", akeyd);
-            add_child("s", skeyd);
-            add_child("d", dkeyd);
-            add_child("ls", lskeyd);
+            add_child(wkeyd, UI_LAYER);
+            add_child(akeyd, UI_LAYER);
+            add_child(skeyd, UI_LAYER);
+            add_child(dkeyd, UI_LAYER);
+            add_child(lskeyd, UI_LAYER);
             
             cursor = new QuadShape(Transform::from_scale(.05f), red);
-            add_child("cursor", cursor);
+            add_child(cursor, UI_LAYER);
             
             player = new QuadShape(Transform::from_scale(.25f), purple);
-            add_child("player", player);
+            add_child(player, MAIN_LAYER);
             
             rectangle = new QuadShape(Transform::from_scale(.2375f, .15f), orange);
 
-            
             subGrid = new Grid(Transform::from_scale(wb_bottom, wb_right), light_gray, .125f);
             mainGrid = new Grid(Transform::from_scale(wb_top, wb_right), gray, .5f);
             axes = new Grid(Transform::from_scale(wb_top, wb_right), white, 0.f);
             axes -> set_line_width(2.f);
 
-            add_child("subGrid", subGrid);
-            add_child("mainGrid", mainGrid);
-            add_child("axes", axes);
+            add_child(subGrid, BACKGROUND_LAYER);
+            add_child(mainGrid, BACKGROUND_LAYER);
+            add_child(axes, BACKGROUND_LAYER);
 
             // like a compass
             etop = new QuadShape(new Transform({ 0.f, wb_top }, Vec2::of(.125f)), red);
@@ -56,10 +61,10 @@ class MyScene final: public Scene {
             eleft = new QuadShape(new Transform({ wb_left, 0.f }, Vec2::of(.125f)), white);
             eright = new QuadShape(new Transform({ wb_right, 0.f }, Vec2::of(.125f)), white);
 
-            add_child("etop", etop);
-            add_child("ebottom", ebottom);
-            add_child("eleft", eleft);
-            add_child("eright", eright);
+            add_child(etop, UI_LAYER);
+            add_child(ebottom, UI_LAYER);
+            add_child(eleft, UI_LAYER);
+            add_child(eright, UI_LAYER);
         }
 
         ~MyScene() override = default;
@@ -126,7 +131,7 @@ class MyScene final: public Scene {
 int main() {
     Engine *engine = Engine::instance();
     engine -> set_title("2D Engine");
-    engine -> set_scale_mode(ScaleMode::SCALE);
+    engine -> set_scale_mode(ScaleMode::KEEP);
     engine -> init();
 
     engine -> add_input({ "up", { GLFW_KEY_W } });

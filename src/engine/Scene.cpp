@@ -5,34 +5,52 @@
 Scene::Scene() = default;
 
 Scene::~Scene() {
-    for (auto &[_, child]: children) {
-        delete child;
+    for (auto &[_, layer]: children) {
+        for (const auto child: layer) {
+            delete child;
+        }
     }
 }
-
 // //////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
 Result<T*> Scene::get_child(const char* key) {
-    if (!children.contains(key)) return Result<T*>(std::string("Object not found"));
-    T *v = dynamic_cast<T*>(children.at(key));
-    return Result<T*>(v);
+    for (auto &[_, layer]: children) {
+        for (auto const *child: layer) {
+            if (child -> name == key) {
+                T *v = dynamic_cast<T*>(child);
+                return Result<T*>(v);
+            }
+        }
+    }
+
+    return Result<T*>("Object not found");
 }
 
-void Scene::add_child(const std::string &name, SceneItem *child, int layer) {
-    children.insert({ name, child });
+void Scene::add_child(SceneItem *child, const int layer) {
+    children[layer].push_back(child);
     child -> scene = this;
     child -> parent = nullptr;
 }
 
 void Scene::remove_child(const std::string &name) {
-    children.erase(name);
+    for (auto &[_, layer]: children) {
+        for (auto &child: layer) {
+            if (const Result index = layer.index_of(child); index.ok()) {
+                layer.erase(index.value());
+                delete child;
+                return;
+            }
+        }
+    }
 }
 
 void Scene::update_children() {
-    for (const auto &[_, child]: children) {
-        child -> transform -> update_bounds();
-        // todo: child -> update();
+    for (auto &[_, layer]: children) {
+        for (const auto *child: layer) {
+            child -> transform -> update_bounds();
+            // todo: child -> update();
+        }
     }
 }
 
@@ -40,7 +58,9 @@ void Scene::draw_children() {
     glClearColor(RGBA(background_color));
     glClear(GL_COLOR_BUFFER_BIT);
 
-    for (auto &[_, child]: children) {
-        child -> gl_draw();
+    for (auto &[_, layer]: children) {
+        for (const auto child: layer) {
+            child -> gl_draw();
+        }
     }
 }

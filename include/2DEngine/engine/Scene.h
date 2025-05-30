@@ -1,12 +1,13 @@
 #pragma once
 
 #include <iostream>
-#include <unordered_map>
+#include <map>
 
 #include "SceneItem.h"
 #include "../macros.h"
 #include "../color/RGBAColor.h"
 #include "../util/Result.h"
+#include "../util/Vector.h"
 
 /**
  * The class representing the scene. Accepts a map of children and a bool should_quit.
@@ -14,7 +15,7 @@
  */
 class Scene {
     public_props:
-        std::unordered_map<std::string, SceneItem*> children; // todo: replace this type
+        std::map<int, Vector<SceneItem*>> children;
         RGBAColor background_color = { 0, 0, 0 };
         
         bool update_enabled = true;
@@ -33,7 +34,7 @@ class Scene {
 
         template<typename T = SceneItem>
         Result<T*> get_child(const char* key);
-        void add_child(const std::string &name, SceneItem *child, int layer = 0);
+        void add_child(SceneItem *child, int layer = 0);
         void remove_child(const std::string &name);
 
         virtual void update_children();

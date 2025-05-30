@@ -110,7 +110,6 @@ class Engine {
         GETTER(GLFWwindow*, glfw);
         GETTER(int, status);
         
-        // todo:rework
         /**
          * Recalculates the world bounds according to the camera's position and the window's size
          * @param origin_x
@@ -154,7 +153,7 @@ class Engine {
          *  @param x - New width of the window
          *  @param y - New height of the window
          */
-        void set_window_size(float x, float y) const; // todo
+        void set_window_size(float x, float y) const;
 
         void init();
         void start();

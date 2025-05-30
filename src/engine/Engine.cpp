@@ -235,7 +235,7 @@ void Engine::start() {
         glfwSwapBuffers(glfw);
 
         // wait for the calculation to finish
-        if (const double current_fps = _get_current_framerate(frame_count, prev_time); current_fps != -1.0) {
+        if (const double current_fps = _get_current_framerate(frame_count, prev_time); current_fps > 0) {
             fps = current_fps;
             std::cout << "fps: " << current_fps << "\n";
         }
@@ -249,4 +249,4 @@ void Engine::start() {
 }
 
 // Initialize singleton
-Engine* Engine::instance_ = nullptr;
+Engine *Engine::instance_ = nullptr;

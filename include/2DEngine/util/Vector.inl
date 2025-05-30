@@ -14,7 +14,7 @@ Vector<T>::Vector(std::initializer_list<T> list) {
     _capacity = list.size();
     _data = static_cast<T*>(operator new[](sizeof(T) * _capacity));
 
-    for (int i = 0; i < list.size(); i++) {
+    for (size_t i = 0; i < list.size(); i++) {
         new (&_data[i]) T(list.begin()[i]);
     }
 }
